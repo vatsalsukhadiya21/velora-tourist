@@ -27,9 +27,9 @@ export const getTrendingPosts = (page = 0, size = 6) =>
 export const getPostsByUser = (userId, page = 0, size = 12) =>
   api.get(`/api/posts/user/${userId}`, { params: { page, size } });
 
-export const searchPosts = ({ q, country, categoryId, page = 0, size = 12 } = {}) =>
+export const searchPosts = ({ q, country, categoryId, page = 0, size = 12, sort = 'createdAt,desc' } = {}) =>
   api.get('/api/posts/search', {
-    params: { q, country, categoryId, page, size },
+    params: { q, country, categoryId, page, size, sort },
   });
 
 export const getCategories = () =>

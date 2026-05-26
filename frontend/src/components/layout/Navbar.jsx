@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../hooks/useAuth';
 import MobileMenu from './MobileMenu';
+import Avatar from '../ui/Avatar';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -102,7 +103,7 @@ export default function Navbar() {
                       onClick={() => setDropdownOpen(!dropdownOpen)}
                       className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-elevated transition-colors"
                     >
-                      <UserAvatar user={user} size="sm" />
+                      <Avatar user={user} size="sm" />
                     </button>
 
                     <AnimatePresence>
@@ -225,31 +226,3 @@ function DropdownLink({ to, label }) {
   );
 }
 
-export function UserAvatar({ user, size = 'sm' }) {
-  const sizeClasses = {
-    sm: 'w-8 h-8 text-sm',
-    md: 'w-10 h-10 text-base',
-    lg: 'w-14 h-14 text-lg',
-    xl: 'w-20 h-20 text-2xl',
-  };
-
-  if (user?.avatarUrl) {
-    return (
-      <img
-        src={user.avatarUrl}
-        alt={user.username}
-        className={`${sizeClasses[size]} rounded-xl object-cover`}
-      />
-    );
-  }
-
-  return (
-    <div
-      className={`${sizeClasses[size]} rounded-xl bg-gradient-to-br from-accent to-violet flex items-center justify-center`}
-    >
-      <span className="text-white font-semibold">
-        {user?.username?.charAt(0).toUpperCase() || '?'}
-      </span>
-    </div>
-  );
-}

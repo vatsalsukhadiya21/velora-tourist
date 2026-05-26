@@ -4,8 +4,9 @@ import {
   HeartIcon,
   ChatBubbleLeftIcon,
   MapPinIcon,
+  BookmarkIcon,
 } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
+import { HeartIcon as HeartSolid, BookmarkIcon as BookmarkSolid } from '@heroicons/react/24/solid';
 import Avatar from '../ui/Avatar';
 import Badge from '../ui/Badge';
 import { formatDate } from '../../utils/formatDate';
@@ -16,7 +17,7 @@ function formatCount(num) {
   return String(num);
 }
 
-export default function ExperienceCard({ post, onLike, isLiked = false }) {
+export default function ExperienceCard({ post, onLike, isLiked = false, onSave, isSaved = false }) {
   const coverImage = post.imageUrls?.[0];
 
   return (
@@ -148,6 +149,26 @@ export default function ExperienceCard({ post, onLike, isLiked = false }) {
               <ChatBubbleLeftIcon className="w-4 h-4" />
               <span>{formatCount(post.commentCount)}</span>
             </span>
+            {onSave && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSave(post.id);
+                }}
+                className={`flex items-center text-xs transition-colors ${
+                  isSaved
+                    ? 'text-amber hover:text-amber/70'
+                    : 'text-muted hover:text-amber'
+                }`}
+                title={isSaved ? 'Remove from saved' : 'Save'}
+              >
+                {isSaved ? (
+                  <BookmarkSolid className="w-4 h-4" />
+                ) : (
+                  <BookmarkIcon className="w-4 h-4" />
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>

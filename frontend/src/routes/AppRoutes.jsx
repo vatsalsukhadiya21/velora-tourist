@@ -13,6 +13,7 @@ const LoginPage = lazy(() => import('../pages/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/RegisterPage'));
 const SavedPage = lazy(() => import('../pages/SavedPage'));
 const CreatePostPage = lazy(() => import('../pages/CreatePostPage'));
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -34,6 +35,9 @@ export default function AppRoutes() {
             <Route path="/create" element={<CreatePostPage />} />
             <Route path="/saved" element={<SavedPage />} />
           </Route>
+
+          {/* Catch-all 404 */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </AnimatePresence>

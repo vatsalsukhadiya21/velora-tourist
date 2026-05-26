@@ -263,3 +263,36 @@ img {
   0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
   50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.4); }
 }
+
+/* ========================================
+   Scrollbar & Overflow Utilities
+   ======================================== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ========================================
+   Line Clamp Utilities
+   ======================================== */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}

@@ -10,6 +10,7 @@
         <version>3.2.5</version>
         <relativePath/>
     </parent>
+    
 
     <groupId>com.velora</groupId>
     <artifactId>velora-api</artifactId>
