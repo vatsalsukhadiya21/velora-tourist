@@ -13,6 +13,15 @@ export const CATEGORIES = [
   { name: 'Budget Travel', slug: 'budget-travel', emoji: '💰' },
 ];
 
+/** Attach emoji labels to categories returned by the API. */
+export function enrichCategories(apiCategories = []) {
+  if (!Array.isArray(apiCategories)) return [];
+  return apiCategories.map((cat) => {
+    const meta = CATEGORIES.find((c) => c.slug === cat.slug);
+    return { ...cat, emoji: meta?.emoji ?? '' };
+  });
+}
+
 export const COUNTRIES = [
   'Japan', 'Italy', 'Thailand', 'France', 'Indonesia',
   'Iceland', 'Peru', 'Morocco', 'New Zealand', 'Greece',

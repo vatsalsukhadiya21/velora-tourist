@@ -1,9 +1,24 @@
 spring:
   application:
     name: velora-api
+  config:
+    import: optional:file:.env[.properties]
   profiles:
     active: dev
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 50MB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/velora
+    username: postgres
+    password: 210706
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

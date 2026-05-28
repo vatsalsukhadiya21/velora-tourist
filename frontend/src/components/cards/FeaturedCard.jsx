@@ -9,8 +9,11 @@ import Avatar from '../ui/Avatar';
 import Badge from '../ui/Badge';
 import { formatDate, formatCount } from '../../utils/formatDate';
 
-export default function FeaturedCard({ post, index = 0 }) {
+export default function FeaturedCard({ post, index = 0, compact = false }) {
   const coverImage = post.imageUrls?.[0];
+  const heightClass = compact
+    ? 'h-44 sm:h-48'
+    : 'h-72 sm:h-80 md:h-96';
 
   return (
     <motion.article
@@ -21,7 +24,7 @@ export default function FeaturedCard({ post, index = 0 }) {
       className="group relative"
     >
       <Link to={`/post/${post.id}`} className="block">
-        <div className="relative h-72 sm:h-80 md:h-96 rounded-2xl overflow-hidden">
+        <div className={`relative ${heightClass} rounded-xl sm:rounded-2xl overflow-hidden`}>
           {/* Background Image */}
           {coverImage ? (
             <img
@@ -53,47 +56,48 @@ export default function FeaturedCard({ post, index = 0 }) {
           )}
 
           {/* Content overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 md:p-8">
-            {/* Location */}
-            <div className="flex items-center gap-1.5 text-white/70 text-sm mb-3">
-              <MapPinIcon className="w-4 h-4" />
-              <span>
+          <div
+            className={`absolute bottom-0 left-0 right-0 ${
+              compact ? 'p-4' : 'p-5 sm:p-6 md:p-8'
+            }`}
+          >
+            <div className="flex items-center gap-1.5 text-white/70 text-xs sm:text-sm mb-2">
+              <MapPinIcon className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">
                 {post.city ? `${post.city}, ` : ''}
                 {post.country}
               </span>
             </div>
 
-            {/* Title */}
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold font-[Outfit] text-white leading-tight line-clamp-2 mb-2">
+            <h3
+              className={`font-bold font-[Outfit] text-white leading-snug line-clamp-2 mb-2 ${
+                compact ? 'text-base sm:text-lg' : 'text-xl sm:text-2xl md:text-3xl'
+              }`}
+            >
               {post.title}
             </h3>
 
-            {/* Description */}
-            <p className="text-white/60 text-sm line-clamp-2 mb-4 max-w-lg hidden sm:block">
-              {post.description}
-            </p>
+            {!compact && (
+              <p className="text-white/60 text-sm line-clamp-2 mb-4 max-w-lg hidden sm:block">
+                {post.description}
+              </p>
+            )}
 
-            {/* Author + Stats */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar user={post.author} size="sm" />
-                <div>
-                  <p className="text-sm font-medium text-white/90">
-                    {post.author?.displayName || post.author?.username}
-                  </p>
-                  <p className="text-xs text-white/50">
-                    {formatDate(post.createdAt)}
-                  </p>
-                </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <Avatar user={post.author} size={compact ? 'xs' : 'sm'} />
+                <p className="text-xs sm:text-sm font-medium text-white/90 truncate">
+                  {post.author?.displayName || post.author?.username}
+                </p>
               </div>
 
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5 text-sm text-white/60">
-                  <HeartIcon className="w-4 h-4" />
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="flex items-center gap-1 text-xs text-white/60">
+                  <HeartIcon className="w-3.5 h-3.5" />
                   {formatCount(post.likeCount || 0)}
                 </span>
-                <span className="flex items-center gap-1.5 text-sm text-white/60">
-                  <ChatBubbleLeftIcon className="w-4 h-4" />
+                <span className="flex items-center gap-1 text-xs text-white/60">
+                  <ChatBubbleLeftIcon className="w-3.5 h-3.5" />
                   {formatCount(post.commentCount || 0)}
                 </span>
               </div>

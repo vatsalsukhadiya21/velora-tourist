@@ -10,7 +10,7 @@ import {
 import PageTransition from '../components/layout/PageTransition';
 import Button from '../components/ui/Button';
 import { createPost, getCategories } from '../api/postApi';
-import { COUNTRIES } from '../utils/constants';
+import { COUNTRIES, enrichCategories } from '../utils/constants';
 
 const MAX_IMAGES = 5;
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -30,15 +30,23 @@ export default function CreatePostPage() {
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
   // ─── Fetch categories ───
   useEffect(() => {
+    setCategoriesLoading(true);
     getCategories()
-      .then(({ data }) => setCategories(data))
-      .catch(() => {});
+      .then(({ data }) => setCategories(enrichCategories(data)))
+      .catch(() => {
+        setErrors((prev) => ({
+          ...prev,
+          categoryId: 'Could not load categories. Refresh the page and try again.',
+        }));
+      })
+      .finally(() => setCategoriesLoading(false));
   }, []);
 
   // ─── Cleanup object URLs ───
@@ -104,7 +112,6 @@ export default function CreatePostPage() {
     if (!formData.title.trim()) errs.title = 'Title is required';
     else if (formData.title.length > 100) errs.title = 'Title must be under 100 characters';
     if (!formData.description.trim()) errs.description = 'Tell us about your experience';
-    if (!formData.categoryId) errs.categoryId = 'Select a category';
     if (!formData.country) errs.country = 'Select a country';
     if (images.length === 0) errs.images = 'Add at least one photo';
     return errs;
@@ -125,10 +132,12 @@ export default function CreatePostPage() {
       const postData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
-        categoryId: Number(formData.categoryId),
         country: formData.country,
         city: formData.city.trim() || null,
       };
+      if (formData.categoryId) {
+        postData.categoryId = Number(formData.categoryId);
+      }
       const { data } = await createPost(postData, images);
       navigate(`/post/${data.id}`, { replace: true });
     } catch (err) {
@@ -349,20 +358,28 @@ export default function CreatePostPage() {
             {/* Category */}
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Category <span className="text-rose">*</span>
+                Category{' '}
+                <span className="text-faint font-normal text-xs">(optional)</span>
               </label>
               <select
                 name="categoryId"
                 value={formData.categoryId}
                 onChange={handleChange}
+                disabled={categoriesLoading || categories.length === 0}
                 className={`input-field !appearance-none ${
                   errors.categoryId ? '!border-danger' : ''
                 } ${!formData.categoryId ? 'text-faint' : ''}`}
               >
-                <option value="">Select a category</option>
+                <option value="">
+                  {categoriesLoading
+                    ? 'Loading categories...'
+                    : categories.length === 0
+                    ? 'No categories available'
+                    : 'No category'}
+                </option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {cat.emoji} {cat.name}
+                    {cat.emoji ? `${cat.emoji} ` : ''}{cat.name}
                   </option>
                 ))}
               </select>

@@ -8,6 +8,7 @@ import {
   GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 import PageTransition from '../components/layout/PageTransition';
+import PageContainer from '../components/layout/PageContainer';
 import Avatar from '../components/ui/Avatar';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
@@ -34,6 +35,7 @@ export default function ProfilePage() {
   const [postsLoading, setPostsLoading] = useState(true);
   const [postsPage, setPostsPage] = useState(0);
   const [postsTotalPages, setPostsTotalPages] = useState(0);
+  const [postsTotalElements, setPostsTotalElements] = useState(0);
   const [postsLoadingMore, setPostsLoadingMore] = useState(false);
 
   // ─── Like tracking ───
@@ -84,6 +86,7 @@ export default function ProfilePage() {
         if (reset) setPosts(content);
         else setPosts((prev) => [...prev, ...content]);
         setPostsTotalPages(data.totalPages || 0);
+        setPostsTotalElements(data.totalElements ?? content.length);
         setPostsPage(page);
       } catch {
         /* silent */
@@ -202,99 +205,92 @@ export default function ProfilePage() {
   }
 
   const hasMorePosts = postsPage + 1 < postsTotalPages;
-  const totalPostCount = posts.length;
+  const experienceCount = postsTotalElements || posts.length;
 
   return (
     <PageTransition>
-      {/* ═══════════════════════════════════
-          PROFILE HEADER
-          ═══════════════════════════════════ */}
-      <section className="relative">
-        {/* Cover gradient */}
-        <div className="h-40 sm:h-52 md:h-64 bg-gradient-to-br from-accent/20 via-violet/15 to-surface rounded-b-3xl overflow-hidden">
-          <div className="absolute inset-0">
-            <div className="absolute top-10 left-1/4 w-40 h-40 bg-accent/10 rounded-full blur-[80px]" />
-            <div className="absolute bottom-0 right-1/3 w-56 h-56 bg-violet/10 rounded-full blur-[100px]" />
+      <section className="relative border-b border-line/50">
+        <div className="h-28 sm:h-36 bg-gradient-to-br from-accent/15 via-violet/10 to-surface overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-4 left-1/4 w-32 h-32 bg-accent/10 rounded-full blur-[60px]" />
+            <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-violet/10 rounded-full blur-[80px]" />
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative -mt-14 sm:-mt-16 flex flex-col sm:flex-row items-start gap-5 pb-6">
-            {/* Avatar */}
+        <PageContainer size="feed" className="relative -mt-12 sm:-mt-14 pb-6 sm:pb-8">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+              className="shrink-0"
             >
               <Avatar
                 user={profileUser}
                 size="2xl"
                 shape="rounded"
                 showRing
-                className="border-4 border-surface"
+                className="border-4 border-surface shadow-xl shadow-black/20"
               />
             </motion.div>
 
-            {/* Info */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="flex-1 pt-2 sm:pt-4"
+              transition={{ delay: 0.08 }}
+              className="flex-1 min-w-0 pt-1 sm:pt-2"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
-                <h1 className="text-2xl sm:text-3xl font-bold font-[Outfit] text-foreground">
-                  {profileUser.displayName || profileUser.username}
-                </h1>
+              <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-accent mb-1">
+                    Traveler
+                  </p>
+                  <h1 className="text-xl sm:text-2xl font-bold font-[Outfit] text-foreground leading-tight truncate">
+                    {profileUser.displayName || profileUser.username}
+                  </h1>
+                  <p className="text-sm text-muted mt-0.5">@{profileUser.username}</p>
+                </div>
                 {isOwnProfile && (
                   <Button
                     variant="secondary"
                     size="sm"
                     leftIcon={PencilSquareIcon}
                     onClick={openEditModal}
+                    className="shrink-0"
                   >
-                    Edit Profile
+                    Edit
                   </Button>
                 )}
               </div>
-              <p className="text-muted text-sm mb-2">
-                @{profileUser.username}
-              </p>
-              {profileUser.bio && (
-                <p className="text-foreground/80 text-sm max-w-xl mb-3 leading-relaxed">
+
+              {profileUser.bio ? (
+                <p className="text-foreground/75 text-sm leading-relaxed max-w-xl mb-4">
                   {profileUser.bio}
                 </p>
-              )}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
+              ) : isOwnProfile ? (
+                <p className="text-faint text-sm mb-4 italic">
+                  Add a bio to tell travelers about yourself
+                </p>
+              ) : null}
+
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <StatPill
+                  icon={GlobeAltIcon}
+                  label={`${experienceCount} ${experienceCount === 1 ? 'story' : 'stories'}`}
+                />
                 {profileUser.country && (
-                  <span className="flex items-center gap-1.5">
-                    <MapPinIcon className="w-4 h-4" />
-                    {profileUser.country}
-                  </span>
+                  <StatPill icon={MapPinIcon} label={profileUser.country} />
                 )}
-                <span className="flex items-center gap-1.5">
-                  <GlobeAltIcon className="w-4 h-4" />
-                  {totalPostCount}{' '}
-                  {totalPostCount === 1 ? 'experience' : 'experiences'}
-                </span>
               </div>
             </motion.div>
           </div>
-        </div>
+        </PageContainer>
       </section>
 
-      {/* ─── Divider ─── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="h-px bg-gradient-to-r from-transparent via-line-light to-transparent" />
-      </div>
-
-      {/* ═══════════════════════════════════
-          USER POSTS
-          ═══════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h2 className="text-xl font-bold font-[Outfit] text-foreground mb-8">
-          {isOwnProfile ? 'Your' : `${profileUser.displayName || profileUser.username}'s`}{' '}
-          Experiences
+      <section className="py-8 sm:py-10">
+        <PageContainer size="feed">
+        <h2 className="text-lg sm:text-xl font-bold font-[Outfit] text-foreground mb-6">
+          {isOwnProfile ? 'Your stories' : `${profileUser.displayName || profileUser.username}'s stories`}
         </h2>
 
         {postsLoading ? (
@@ -313,13 +309,14 @@ export default function ProfilePage() {
           />
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
               {posts.map((post) => (
                 <ExperienceCard
                   key={post.id}
                   post={post}
                   onLike={handleLike}
                   isLiked={likedPosts.has(post.id)}
+                  variant="feed"
                 />
               ))}
             </div>
@@ -338,6 +335,7 @@ export default function ProfilePage() {
             )}
           </>
         )}
+        </PageContainer>
       </section>
 
       {/* ═══════════════════════════════════
@@ -464,5 +462,14 @@ export default function ProfilePage() {
         </div>
       </Modal>
     </PageTransition>
+  );
+}
+
+function StatPill({ icon: Icon, label }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-line text-xs text-muted">
+      <Icon className="w-3.5 h-3.5 shrink-0 text-faint" />
+      {label}
+    </span>
   );
 }

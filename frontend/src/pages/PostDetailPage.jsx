@@ -219,20 +219,20 @@ export default function PostDetailPage() {
       {/* ═══════════════════════════════════
           IMAGE GALLERY
           ═══════════════════════════════════ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <section className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6">
         <ImageGallery images={post.imageUrls || []} className="rounded-2xl" />
       </section>
 
       {/* ═══════════════════════════════════
           MAIN CONTENT
           ═══════════════════════════════════ */}
-      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <article className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
         {/* Back link */}
         <Link
           to="/explore"
-          className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-8 sm:mb-10"
         >
-          <ArrowLeftIcon className="w-4 h-4" />
+          <ArrowLeftIcon className="w-4 h-4 shrink-0" />
           Back to Explore
         </Link>
 
@@ -241,91 +241,98 @@ export default function PostDetailPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="space-y-4 sm:space-y-5"
         >
           {post.categoryName && (
-            <Badge text={post.categoryName} size="md" className="mb-4" />
+            <Badge text={post.categoryName} size="md" className="mb-0" />
           )}
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-[Outfit] text-foreground leading-tight mb-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-[2rem] font-bold font-[Outfit] text-foreground leading-snug tracking-tight">
             {post.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted mb-6">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
             <span className="flex items-center gap-1.5">
-              <MapPinIcon className="w-4 h-4" />
+              <MapPinIcon className="w-4 h-4 shrink-0 text-faint" />
               {post.city ? `${post.city}, ` : ''}
               {post.country}
             </span>
             <span className="flex items-center gap-1.5">
-              <CalendarIcon className="w-4 h-4" />
+              <CalendarIcon className="w-4 h-4 shrink-0 text-faint" />
               {formatDate(post.createdAt)}
             </span>
           </div>
         </motion.header>
 
         {/* ─── Divider ─── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-line-light to-transparent mb-8" />
+        <div
+          className="h-px bg-gradient-to-r from-transparent via-line-light to-transparent my-8 sm:my-10"
+          aria-hidden="true"
+        />
 
         {/* ─── Description ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="prose-content mb-8"
+          className="prose-content max-w-[68ch] mb-10 sm:mb-12"
         >
           {post.description?.split('\n').map((paragraph, i) =>
             paragraph.trim() ? (
               <p
                 key={i}
-                className="text-foreground/85 text-base sm:text-lg leading-relaxed mb-4"
+                className="text-foreground/80 text-[15px] sm:text-base leading-[1.75] sm:leading-[1.8] mb-5 last:mb-0"
               >
                 {paragraph}
               </p>
             ) : (
-              <br key={i} />
+              <div key={i} className="h-4" aria-hidden="true" />
             )
           )}
         </motion.div>
 
         {/* ─── Divider ─── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-line-light to-transparent mb-6" />
+        <div
+          className="h-px bg-gradient-to-r from-transparent via-line-light to-transparent mb-8 sm:mb-10"
+          aria-hidden="true"
+        />
 
         {/* ─── Author Row + Actions ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10"
+          className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 mb-10 sm:mb-12"
         >
           {/* Author */}
           <Link
             to={`/profile/${post.author?.id}`}
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-3 group min-w-0"
           >
-            <Avatar user={post.author} size="md" />
-            <div>
-              <p className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
+            <Avatar user={post.author} size="md" className="shrink-0" />
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors truncate">
                 {post.author?.displayName || post.author?.username}
               </p>
-              <p className="text-xs text-muted">@{post.author?.username}</p>
+              <p className="text-xs text-muted truncate">@{post.author?.username}</p>
             </div>
           </Link>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto sm:justify-end">
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleLike}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-medium ${
+              className={`flex flex-1 sm:flex-initial items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-medium min-h-[42px] ${
                 liked
                   ? 'bg-rose/10 border-rose/30 text-rose'
                   : 'bg-card border-line text-muted hover:text-foreground hover:border-line-light'
               }`}
             >
               {liked ? (
-                <HeartSolid className="w-4 h-4" />
+                <HeartSolid className="w-4 h-4 shrink-0" />
               ) : (
-                <HeartIcon className="w-4 h-4" />
+                <HeartIcon className="w-4 h-4 shrink-0" />
               )}
               {likeCount}
             </motion.button>
@@ -333,16 +340,16 @@ export default function PostDetailPage() {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleSave}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-medium ${
+              className={`flex flex-1 sm:flex-initial items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-medium min-h-[42px] ${
                 saved
                   ? 'bg-amber/10 border-amber/30 text-amber'
                   : 'bg-card border-line text-muted hover:text-foreground hover:border-line-light'
               }`}
             >
               {saved ? (
-                <BookmarkSolid className="w-4 h-4" />
+                <BookmarkSolid className="w-4 h-4 shrink-0" />
               ) : (
-                <BookmarkIcon className="w-4 h-4" />
+                <BookmarkIcon className="w-4 h-4 shrink-0" />
               )}
               Save
             </motion.button>
@@ -350,7 +357,7 @@ export default function PostDetailPage() {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleShare}
-              className="p-2.5 rounded-xl bg-card border border-line text-muted hover:text-foreground hover:border-line-light transition-all"
+              className="flex items-center justify-center p-2.5 rounded-xl bg-card border border-line text-muted hover:text-foreground hover:border-line-light transition-all min-h-[42px] min-w-[42px] shrink-0"
               title="Share"
             >
               <ShareIcon className="w-4 h-4" />
@@ -360,7 +367,7 @@ export default function PostDetailPage() {
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setDeleteModalOpen(true)}
-                className="p-2.5 rounded-xl bg-card border border-line text-muted hover:text-danger hover:border-danger/30 transition-all"
+                className="flex items-center justify-center p-2.5 rounded-xl bg-card border border-line text-muted hover:text-danger hover:border-danger/30 transition-all min-h-[42px] min-w-[42px] shrink-0"
                 title="Delete"
               >
                 <TrashIcon className="w-4 h-4" />
@@ -370,32 +377,35 @@ export default function PostDetailPage() {
         </motion.div>
 
         {/* ─── Divider ─── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-line-light to-transparent mb-8" />
+        <div
+          className="h-px bg-gradient-to-r from-transparent via-line-light to-transparent mb-8 sm:mb-10"
+          aria-hidden="true"
+        />
 
         {/* ═══════════════════════════════════
             COMMENTS SECTION
             ═══════════════════════════════════ */}
-        <section>
-          <h2 className="text-xl font-bold font-[Outfit] text-foreground mb-6 flex items-center gap-2">
-            <ChatBubbleLeftIcon className="w-5 h-5 text-accent" />
+        <section className="space-y-6 sm:space-y-8">
+          <h2 className="text-lg sm:text-xl font-bold font-[Outfit] text-foreground flex items-center gap-2">
+            <ChatBubbleLeftIcon className="w-5 h-5 text-accent shrink-0" />
             Comments
             <span className="text-sm font-normal text-muted">({commentCount})</span>
           </h2>
 
           {/* Comment Form */}
           {isAuthenticated ? (
-            <form onSubmit={handleAddComment} className="mb-8">
-              <div className="flex gap-3">
-                <Avatar user={user} size="sm" className="mt-1 flex-shrink-0" />
-                <div className="flex-1">
+            <form onSubmit={handleAddComment} className="mb-2 sm:mb-0">
+              <div className="flex gap-3 sm:gap-4">
+                <Avatar user={user} size="sm" className="mt-1 shrink-0" />
+                <div className="flex-1 min-w-0">
                   <textarea
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     placeholder="Share your thoughts..."
                     rows={3}
-                    className="textarea-field !min-h-[80px]"
+                    className="textarea-field !min-h-[88px]"
                   />
-                  <div className="mt-2 flex justify-end">
+                  <div className="mt-3 flex justify-end">
                     <Button
                       type="submit"
                       size="sm"
@@ -409,8 +419,8 @@ export default function PostDetailPage() {
               </div>
             </form>
           ) : (
-            <div className="mb-8 p-4 bg-card border border-line rounded-xl text-center">
-              <p className="text-sm text-muted mb-3">
+            <div className="p-5 sm:p-6 bg-card border border-line rounded-xl text-center">
+              <p className="text-sm text-muted mb-4">
                 Sign in to join the conversation
               </p>
               <Link to="/login" className="btn-primary text-sm !py-2 !px-5">
@@ -423,11 +433,11 @@ export default function PostDetailPage() {
           {commentsLoading && comments.length === 0 ? (
             <CommentSkeleton count={3} />
           ) : comments.length === 0 ? (
-            <p className="text-center text-muted text-sm py-8">
+            <p className="text-center text-muted text-sm py-10 sm:py-12">
               No comments yet. Be the first to share your thoughts!
             </p>
           ) : (
-            <div>
+            <div className="space-y-1">
               {comments.map((comment, i) => (
                 <CommentCard
                   key={comment.id}
@@ -439,7 +449,7 @@ export default function PostDetailPage() {
               ))}
 
               {hasMoreComments && (
-                <div className="mt-4 text-center">
+                <div className="pt-6 text-center">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -459,12 +469,12 @@ export default function PostDetailPage() {
           RELATED POSTS
           ═══════════════════════════════════ */}
       {relatedPosts.length > 0 && (
-        <section className="py-12 border-t border-line">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold font-[Outfit] text-foreground mb-8">
+        <section className="py-12 sm:py-16 border-t border-line mt-2 sm:mt-4">
+          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+            <h2 className="text-xl sm:text-2xl font-bold font-[Outfit] text-foreground mb-6 sm:mb-8">
               More Like This
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
               {relatedPosts.map((p) => (
                 <ExperienceCard key={p.id} post={p} />
               ))}

@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: velora-api
-  profiles:
-    active: dev
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 50MB

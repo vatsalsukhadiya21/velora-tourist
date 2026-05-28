@@ -13,7 +13,7 @@ export default function App() {
     <div className="min-h-screen bg-surface text-foreground flex flex-col">
       {!isAuthPage && <Navbar />}
 
-      <main className={`flex-1 ${!isAuthPage ? 'pt-20' : ''}`}>
+      <main className={`flex-1 ${!isAuthPage ? 'pt-16' : ''}`}>
         <AppRoutes />
       </main>
 
